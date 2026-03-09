@@ -1,0 +1,38 @@
+# Models
+*.h5
+*.keras
+*.pkl
+*.pt
+*.pth
+*.onnx
+*.tflite
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Dataset
+dataset/
+data/
+*.csv
+*.zip
+*.tar
+*.tar.gz
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+ai-project-vscode.ipynb
