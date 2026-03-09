@@ -295,10 +295,10 @@ function App() {
 
                 {/* Reference Guide */}
                 <div className="bg-slate-800 rounded-lg p-4 space-y-3 border border-slate-700">
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  <p className="text-xl font-semibold text-slate-400 uppercase tracking-wider">
                     Condition Reference
                   </p>
-                  <div className="space-y-2 text-xs text-slate-300">
+                  <div className="space-y-2 text-sm text-slate-300">
                     <div className="flex gap-2">
                       <span className="text-blue-400">●</span>{" "}
                       <span>
@@ -342,12 +342,19 @@ function App() {
           )}
 
           {/* Footer Info */}
-          <div className="bg-slate-800 rounded-lg border border-slate-700 px-4 py-3 text-xs text-slate-400 flex items-center gap-2">
+          <div className="bg-slate-800 rounded-lg border border-slate-700 px-4 py-3 text-xs text-slate-400 flex items-center justify-between gap-2">
+            
+            <div className="flex items-center gap-2">
             <Microscope className="w-4 h-4" />
-            <p>
-              Powered by TensorFlow | Model: VGG16 Transfer Learning | Input:
-              128×128 RGB
-            </p>
+                 <p> Powered by TensorFlow | Model: VGG16 Transfer Learning | Input:
+                128×128 RGB
+              </p> 
+              </div>
+              <div>
+                <p className="text-slate-300 font-semibold whitespace-nowrap">
+                  Developed by Muhammad Fahad
+                </p>             
+            </div>
           </div>
         </div>
       </div>
