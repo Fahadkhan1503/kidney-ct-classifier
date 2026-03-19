@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import "./App.css";
 
-const API_URL = "http://localhost:8000";
+// const API_URL = "http://localhost:8000";
+const API_URL = "https://muhammadfahad1503-kidney-ct-classifier.hf.space";
 
 function App() {
   const [file, setFile] = useState(null);
