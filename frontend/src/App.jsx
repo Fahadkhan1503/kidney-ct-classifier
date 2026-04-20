@@ -7,7 +7,7 @@ import {
   Loader,
   AlertCircle,
   Microscope,
-  BarChart3,
+  BarChart3,  ImageOff,  ScanLine,  FileX
 } from "lucide-react";
 import "./App.css";
 
@@ -77,8 +77,21 @@ function App() {
         throw new Error(errorData.detail || "Prediction failed");
       }
 
-      const result = await response.json();
-      setPrediction(result);
+      
+const result = await response.json()
+    
+const isInvalid =
+  (result.predicted_class === "Cyst"   && result.confidence < 97) ||
+  (result.predicted_class === "Normal" && result.confidence < 60) ||
+  (result.predicted_class === "Stone"  && result.confidence < 60) ||
+  (result.predicted_class === "Tumor"  && result.confidence < 60)
+
+if (isInvalid) {
+  setError(" This doesn't appear to be a valid kidney CT scan. Please upload a correct CT scan image.")
+  setPrediction(null)
+} else {
+  setPrediction(result)
+}
     } catch (err) {
       setError(err.message);
     } finally {
@@ -300,12 +313,64 @@ return (
                 </div>
               </div>
             </div>
+          )  : error ? (
+            <div className="flex-1 min-h-48 bg-linear-to-br from-slate-900 to-slate-800 rounded-2xl border border-red-500/30 flex items-center justify-center shadow-2xl">
+            <div className="text-center px-8">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-8 h-8 md:w-10 md:h-10 text-red-400" />
+              </div>
+              <p className="text-lg md:text-xl font-bold text-red-400 mb-2">Invalid Image Detected</p>
+              <p className="text-sm text-slate-400 mb-6">The uploaded image could not be classified as a kidney CT scan.</p>
+              <div className="bg-slate-800 border border-slate-700 rounded-xl p-5 text-left space-y-3">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Possible Causes</p>
+                {[
+                  { icon: <ImageOff className="w-4 h-4 text-slate-400" />,   text: "Image is not a kidney CT scan" },
+                  { icon: <Camera className="w-4 h-4 text-slate-400" />,     text: "Photo, screenshot, or logo uploaded instead" },
+                  { icon: <ScanLine className="w-4 h-4 text-slate-400" />,   text: "CT scan of a different body part" },
+                  { icon: <Microscope className="w-4 h-4 text-slate-400" />, text: "Image lacks medical scan characteristics" },
+                  { icon: <FileX className="w-4 h-4 text-slate-400" />,      text: "Image quality too low or heavily compressed" },
+                ].map(({ icon, text }) => (
+                  <div key={text} className="flex items-center gap-3 text-sm text-slate-300">
+                    {icon}
+                    {text}
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-slate-500 mt-4">Please upload a valid kidney CT scan image to proceed.</p>
+            </div>
+          </div>
+
           ) : (
             <div className="flex-1 min-h-48 bg-linear-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 border-dashed flex items-center justify-center shadow-2xl">
               <div className="text-center">
                 <BarChart3 className="w-16 h-16 md:w-24 md:h-24 text-slate-600 mb-4 mx-auto" />
                 <p className="text-lg md:text-xl font-bold text-slate-400">Ready for Analysis</p>
                 <p className="text-sm text-slate-500 mt-2">Upload a CT scan to begin</p>
+                  <div className="mt-6 bg-slate-800 border border-slate-700 rounded-xl p-5 text-left space-y-3 max-w-sm mx-auto">
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">How to Use</p>
+                      {[
+                        { icon: <Camera className="w-4 h-4 text-sky-400 shrink-0" />,     text: "Click the upload box or drag & drop your image" },
+                        { icon: <ScanLine className="w-4 h-4 text-sky-400 shrink-0" />,   text: "Use a kidney CT scan image (JPG, PNG)" },
+                        { icon: <Search className="w-4 h-4 text-sky-400 shrink-0" />,     text: "Click Analyze to get AI diagnosis" },
+                        { icon: <Microscope className="w-4 h-4 text-sky-400 shrink-0" />, text: "Results show condition and confidence score" },
+                      ].map(({ icon, text }) => (
+                        <div key={text} className="flex items-center gap-3 text-sm text-slate-300">
+                          {icon}
+                          {text}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-slate-500 mt-5">
+                    Need a test image?{" "}
+                    <a
+                      href="https://www.kaggle.com/datasets/shuvokumarbasakbd/kidney-colorized-ct-normal-cyst-tumor-stone"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sky-400 hover:text-sky-300 underline underline-offset-2 transition-colors"
+                    >
+                      Download from Kaggle Dataset
+                    </a>
+                  </p>
               </div>
             </div>
           )}
