@@ -122,8 +122,27 @@ if (isInvalid) {
     };
     return colors[className] || "bg-slate-50 border-slate-200";
   };
+
+
+  const loadExample = async (imgPath, label) => {
+  try {
+    const response = await fetch(imgPath);
+    const blob = await response.blob();
+    const file = new File([blob], `${label.toLowerCase()}_example.jpg`, { type: "image/jpeg" });
+    setFile(file);
+    setPrediction(null);
+    setError(null);
+    const reader = new FileReader();
+    reader.onloadend = () => setPreview(reader.result);
+    reader.readAsDataURL(file);
+  } catch (err) {
+    console.error("Failed to load example:", err);
+  }
+};
+
+
 return (
-    <div className="min-h-screen w-screen bg-slate-950 flex flex-col">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-950 flex flex-col">
       {/* Header */}
       <header className="bg-linear-to-r from-slate-900 to-slate-800 border-b border-slate-700 px-4 md:px-8 py-4">
         <div className="flex items-center justify-between">
@@ -177,6 +196,21 @@ return (
               <label
                 htmlFor="fileInput"
                 className="border-2 border-dashed border-slate-600 rounded-xl cursor-pointer hover:border-sky-500 hover:bg-sky-500/5 transition-all duration-300 flex flex-row justify-start items-center gap-3 group px-4 py-3"
+                 onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const droppedFile = e.dataTransfer.files[0];
+                    if (droppedFile) {
+                      setFile(droppedFile);
+                      const reader = new FileReader();
+                      reader.onloadend = () => setPreview(reader.result);
+                      reader.readAsDataURL(droppedFile);
+                      setPrediction(null);
+                      setError(null);
+                    }
+                  }}
               >
                 <input
                   type="file"
@@ -341,38 +375,80 @@ return (
           </div>
 
           ) : (
-            <div className="flex-1 min-h-48 bg-linear-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 border-dashed flex items-center justify-center shadow-2xl">
-              <div className="text-center">
-                <BarChart3 className="w-16 h-16 md:w-24 md:h-24 text-slate-600 mb-4 mx-auto" />
-                <p className="text-lg md:text-xl font-bold text-slate-400">Ready for Analysis</p>
-                <p className="text-sm text-slate-500 mt-2">Upload a CT scan to begin</p>
-                  <div className="mt-6 bg-slate-800 border border-slate-700 rounded-xl p-5 text-left space-y-3 max-w-sm mx-auto">
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">How to Use</p>
-                      {[
-                        { icon: <Camera className="w-4 h-4 text-sky-400 shrink-0" />,     text: "Click the upload box or drag & drop your image" },
-                        { icon: <ScanLine className="w-4 h-4 text-sky-400 shrink-0" />,   text: "Use a kidney CT scan image (JPG, PNG)" },
-                        { icon: <Search className="w-4 h-4 text-sky-400 shrink-0" />,     text: "Click Analyze to get AI diagnosis" },
-                        { icon: <Microscope className="w-4 h-4 text-sky-400 shrink-0" />, text: "Results show condition and confidence score" },
-                      ].map(({ icon, text }) => (
-                        <div key={text} className="flex items-center gap-3 text-sm text-slate-300">
-                          {icon}
-                          {text}
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-xs text-slate-500 mt-5">
-                    Need a test image?{" "}
-                    <a
-                      href="https://www.kaggle.com/datasets/shuvokumarbasakbd/kidney-colorized-ct-normal-cyst-tumor-stone"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sky-400 hover:text-sky-300 underline underline-offset-2 transition-colors"
-                    >
-                      Download from Kaggle Dataset
-                    </a>
-                  </p>
-              </div>
+            <div className="flex-1 min-h-48 bg-linear-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 shadow-2xl flex flex-col p-4 md:p-6 gap-4">
+
+          {/* Top Row — equal height both sides */}
+          <div className="flex flex-col sm:flex-row gap-4 ">
+
+            {/* Top-Left: Ready for Analysis */}
+            <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
+              <BarChart3 className="w-20 h-20 text-slate-600 mb-3" />
+              <p className="text-xl font-bold text-slate-400">Ready for Analysis</p>
+              <p className="text-sm text-slate-500 mt-1">Upload a CT scan to begin</p>
             </div>
+
+            {/* Top-Right: How to Use */}
+            <div className="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col justify-center gap-2.5">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider text-center">How to Use</p>
+              {[
+                { icon: <Camera     className="w-4 h-4 text-sky-400 shrink-0" />, text: "Click the upload box or drag & drop your image" },
+                { icon: <ScanLine   className="w-4 h-4 text-sky-400 shrink-0" />, text: "Use a kidney CT scan image (JPG, PNG)"          },
+                { icon: <Search     className="w-4 h-4 text-sky-400 shrink-0" />, text: "Click Analyze to get AI diagnosis"              },
+                { icon: <Microscope className="w-4 h-4 text-sky-400 shrink-0" />, text: "Results show condition and confidence score"    },
+              ].map(({ icon, text }) => (
+                <div key={text} className="flex items-start gap-2 text-sm text-slate-300">
+                  <span className="mt-0.5">{icon}</span>
+                  <span>{text}</span>
+                </div>
+              ))}
+              <p className="text-xs text-slate-500 mt-1">
+                Need a test image?{" "}
+                <a
+                  href="https://www.kaggle.com/datasets/shuvokumarbasakbd/kidney-colorized-ct-normal-cyst-tumor-stone"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sky-400 hover:text-sky-300 underline underline-offset-2 transition-colors"
+                >
+                  Download from Kaggle
+                </a>
+              </p>
+            </div>
+          </div>
+              
+          {/* Bottom Row: 4 Example Images — 2x2 on mobile, 4-in-a-row on md+ */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-18">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider col-span-full text-left mb-2">Example Images</p>
+            {[
+              { label: "Cyst",   color: "border-sky-500",     textColor: "text-sky-400",     img: "https://res.cloudinary.com/dvtabvkte/image/upload/q_auto/f_auto/v1777371811/Cyst-_403__7_jjvqns.jpg"   },
+              { label: "Tumor",  color: "border-rose-500",    textColor: "text-rose-400",    img: "https://res.cloudinary.com/dvtabvkte/image/upload/q_auto/f_auto/v1777371936/Tumor-_1606__7_eeryf0.jpg"  },
+              { label: "Stone",  color: "border-stone-400",   textColor: "text-stone-300",   img: "https://res.cloudinary.com/dvtabvkte/image/upload/q_auto/f_auto/v1777371904/Stone-_646__11_igdajt.jpg"  },
+              { label: "Normal", color: "border-emerald-500", textColor: "text-emerald-400", img: "https://res.cloudinary.com/dvtabvkte/image/upload/q_auto/f_auto/v1777371878/Normal-_3127__10_vlrvfj.jpg  " },
+            ].map(({ label, color, textColor, img }) => (
+              <div
+                key={label}
+                onClick={() => loadExample(img, label)}
+                className={`relative rounded-xl overflow-hidden border-2 ${color} cursor-pointer hover:scale-105 transition-all duration-200 group`}
+              >
+                <img
+                  src={img}
+                  alt={label}
+                  className="w-full object-cover h-32 md:h-40"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-black/60 py-1.5 text-center">
+                  <span className={`text-xs font-bold uppercase tracking-wider ${textColor}`}>{label}</span>
+                </div>
+                <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-200 flex items-center justify-center">
+                  <span className="opacity-0 group-hover:opacity-100 text-white text-xs font-semibold bg-black/50 px-2 py-1 rounded-lg">
+                    Try this
+                  </span>
+                </div>
+              </div>
+            ))}
+    </div>
+
+  </div>
+
+
           )}
 
           {/* Footer */}
