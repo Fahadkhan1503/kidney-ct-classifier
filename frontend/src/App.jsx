@@ -81,10 +81,10 @@ function App() {
 const result = await response.json()
     
 const isInvalid =
-  (result.predicted_class === "Cyst"   && result.confidence < 97) ||
-  (result.predicted_class === "Normal" && result.confidence < 60) ||
-  (result.predicted_class === "Stone"  && result.confidence < 60) ||
-  (result.predicted_class === "Tumor"  && result.confidence < 60)
+  (result.predicted_class === "Cyst"   && result.confidence < 70) ||
+  (result.predicted_class === "Normal" && result.confidence < 50) ||
+  (result.predicted_class === "Stone"  && result.confidence < 50) ||
+  (result.predicted_class === "Tumor"  && result.confidence < 50)
 
 if (isInvalid) {
   setError(" This doesn't appear to be a valid kidney CT scan. Please upload a correct CT scan image.")
