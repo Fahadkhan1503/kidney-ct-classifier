@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Hospital, Brain, Shield, Zap, ChevronRight, Microscope, Activity, CheckCircle } from "lucide-react";
+import { Hospital, Brain, Shield, Zap, ChevronRight, Microscope, Activity, CheckCircle, Droplets, AlertTriangle, Stone } from "lucide-react";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -29,9 +29,9 @@ export default function HomePage() {
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-24 pb-16 overflow-hidden">
 
         {/* background glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-sky-600/10 blur-3xl pointer-events-none" />
-        <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] rounded-full bg-blue-700/10 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-cyan-600/8 blur-3xl pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-175 h-175 rounded-full bg-sky-600/10 blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 left-1/4 w-100 h-100 rounded-full bg-blue-700/10 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-75 h-75 rounded-full bg-cyan-600/8 blur-3xl pointer-events-none" />
 
         {/* grid pattern overlay */}
         <div
@@ -124,7 +124,7 @@ export default function HomePage() {
               {
                 step: "03",
                 icon: <Shield className="w-6 h-6" />,
-                title: "Get Diagnosis",
+                title: "Instant Result",
                 desc: "Receive instant classification results with confidence scores for all four kidney conditions.",
               },
             ].map(({ step, icon, title, desc }) => (
@@ -158,7 +158,7 @@ export default function HomePage() {
                 color: "from-sky-700 to-sky-500",
                 border: "border-sky-500/30",
                 glow: "group-hover:shadow-sky-500/10",
-                icon: "💧",
+                icon: <Droplets className="w-6 h-6" />,
                 desc: "A fluid-filled sac that forms on or within the kidney. Usually benign and often requires monitoring rather than immediate treatment.",
               },
               {
@@ -166,7 +166,7 @@ export default function HomePage() {
                 color: "from-emerald-800 to-emerald-600",
                 border: "border-emerald-500/30",
                 glow: "group-hover:shadow-emerald-500/10",
-                icon: "✅",
+                icon: <CheckCircle className="w-6 h-6" />,
                 desc: "Healthy kidney tissue showing no signs of abnormality. Regular screening is still recommended for high-risk individuals.",
               },
               {
@@ -174,7 +174,7 @@ export default function HomePage() {
                 color: "from-stone-600 to-stone-400",
                 border: "border-stone-500/30",
                 glow: "group-hover:shadow-stone-500/10",
-                icon: "🪨",
+                icon: <Stone className="w-6 h-6" />,
                 desc: "Hard mineral and salt deposits that form inside the kidney. Can cause severe pain and may require medical intervention.",
               },
               {
@@ -182,7 +182,7 @@ export default function HomePage() {
                 color: "from-rose-900 to-rose-700",
                 border: "border-rose-500/30",
                 glow: "group-hover:shadow-rose-500/10",
-                icon: "⚠️",
+                icon: <AlertTriangle className="w-6 h-6" />,
                 desc: "Abnormal tissue growth in the kidney. Early detection is critical for effective treatment and improved patient outcomes.",
               },
             ].map(({ name, color, border, glow, icon, desc }) => (
@@ -213,14 +213,22 @@ export default function HomePage() {
               <div>
                 <h3 className="text-2xl font-bold text-white mb-4">Kidney Colorized CT Dataset</h3>
                 <p className="text-slate-400 leading-relaxed mb-6 text-sm">
-                  Collected from hospitals in Dhaka, Bangladesh using PACS systems. Images were verified by radiologists and cover both coronal and axial cuts from contrast and non-contrast studies.
+                  A medical imaging dataset featuring enhanced CT scans labeled across four categories, supporting research and development in kidney disease detection and classification.
                 </p>
                 <div className="space-y-3">
                   {[
                     "12,446 unique CT scan images",
-                    "Verified by radiologist and medical technologist",
                     "Lossless JPG format, DICOM anonymized",
                     "Coronal and axial plane coverage",
+                    "Enhanced/colorized CT format License: MIT",
+                    <a
+                  href="https://www.kaggle.com/datasets/shuvokumarbasakbd/kidney-colorized-ct-normal-cyst-tumor-stone"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sky-400 hover:text-sky-300 underline underline-offset-2 transition-colors"
+                >
+                  View dataset on Kaggle
+                </a>
                   ].map((point) => (
                     <div key={point} className="flex items-center gap-3 text-sm text-slate-300">
                       <CheckCircle className="w-4 h-4 text-sky-400 shrink-0" />
